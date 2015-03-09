@@ -1,27 +1,31 @@
+import copy
+
 __author__ = 'duc07'
 import numpy
-from random import randint
+import random
 
 GAMMA = 0.9
-GOAL_STATE = 7
+GOAL_STATE = 6
 g_numb_same_q = 0
-g_prev_q_arr = None
+g_prev_q_arr = numpy.zeros((12, 4))
 g_cur_q_arr = numpy.zeros((12, 4))
-g_dict_action = {'left': -1, 'right': 1, 'up': -4, 'down': 4}
+g_dict_action = {0: -4, 1: 4, 2: -1, 3: 1}  # 0: up, 1: down, 2: left, 3: right
 
 
 # Randomly select a state
 def select_state():
-    return randint(1, 12)
+    states = [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11]
+    return random.choice(states)
 
 
 # Return only legal actions from state s
 def select_act(s):
     acts = []
     for a, v in g_dict_action.iteritems():
-        if (s + v) in range(1, 12):
+        if (s + v) in range(0, 12):
             acts.append(a)
-    return acts
+    randind = random.randint(0, len(acts) - 1)
+    return acts[randind]
 
 
 def get_reward(s, a):
@@ -38,8 +42,10 @@ def get_max_q(s):
 
 
 def check_end_condition():
+    print g_cur_q_arr
+    print g_prev_q_arr
     global g_numb_same_q
-    if g_prev_q_arr == g_cur_q_arr:
+    if (g_prev_q_arr is not None) and (g_prev_q_arr == g_cur_q_arr).all():
         g_numb_same_q += 1
     else:
         g_numb_same_q = 0
@@ -48,7 +54,7 @@ def check_end_condition():
 
 def do_episodes():
     global g_cur_q_arr
-    g_cur_q_arr = numpy.zeros((12, 4))  # 1. Init the table entry Q(s,a) to zero
+    # g_cur_q_arr = numpy.zeros((12, 4))  # 1. Init the table entry Q(s,a) to zero
     s = select_state()  # randomly select a state
 
     while s != GOAL_STATE:
@@ -61,8 +67,11 @@ def do_episodes():
 
 def Q_learning():
     global g_prev_q_arr
-    while check_end_condition():
-        g_prev_q_arr = g_cur_q_arr
+    i = 0
+    while not check_end_condition():
+        i += 1
+        print 'iter: ', i
+        g_prev_q_arr[:][:] = g_cur_q_arr
         do_episodes()
 
 
@@ -72,7 +81,7 @@ def run():
 
 
 def main():
-    for i in range(1, 10):
+    for i in range(1, 2):
         run()
 
 
