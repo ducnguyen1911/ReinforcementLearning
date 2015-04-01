@@ -91,6 +91,7 @@ def reset_q_arrs():
     global g_q_diff
     g_prev_q_arr = numpy.zeros((12, 4))
     g_cur_q_arr = numpy.zeros((12, 4))
+    g_cur_q_arr += random.random() * 0.0001  # init Q table with a very small random number
     g_q_diff = []
     g_numb_same_q = 0
 
@@ -115,11 +116,12 @@ def plot_q_diff():
 
 
 def run(et):
-    print 'e = ', et
     global e
     e = et
     Q_learning()
-    print 'g_cur_q_arr: ', g_cur_q_arr
+    g_cur_q_arr[g_cur_q_arr < 0.5] = -99
+    print 'e = ', et
+    print 'g_cur_q_arr: ', numpy.around(g_cur_q_arr, 3)
     print 'g_q_diff: ', g_q_diff
     plot_q_diff()
 
