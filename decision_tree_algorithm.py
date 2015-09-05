@@ -1,7 +1,6 @@
-import math
-
 __author__ = 'duc07'
 
+import math
 from collections import Counter
 
 
